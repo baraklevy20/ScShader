@@ -20,16 +20,20 @@ const unpack = async (fileToUnpack) => {
 
   let currentIndex = headerSize - 1;
   for (let i = 0; i < numberOfShaders; i += 1) {
-    const u1 = buffer.readUInt32LE(currentIndex);
-    const shaderOffset = buffer.readUInt32LE(currentIndex + 4);
-    const u3 = buffer.readUInt32LE(currentIndex + 8);
+    // Unused
+    buffer.readUInt32LE(currentIndex);
+
+    // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glSampleMaski.xhtml
+    const shaderMask = buffer.readUInt32LE(currentIndex + 4);
+    const shaderMaskNumber = buffer.readUInt32LE(currentIndex + 8);
+
     const offset = buffer.readUInt32LE(currentIndex + 0xc);
     const length = buffer.readUInt32LE(currentIndex + 0x10);
     currentIndex += 20;
 
     const shader = buffer.subarray(offset, offset + length);
-    fs.writeFileSync(`temp/${fileToUnpack}/${shaderOffset}.spv`, shader);
-    decompileShader(`${fileToUnpack}/${shaderOffset}.spv`);
+    fs.writeFileSync(`temp/${fileToUnpack}/${i}.spv`, shader);
+    decompileShader(`${fileToUnpack}/${i}.spv`);
   }
 };
 module.exports = {

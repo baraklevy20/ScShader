@@ -10,7 +10,10 @@
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}\\index.js",
-      "args": ["--file", "assets/uber.frag.shader"]
+      "args": [
+        // "--file", "assets/uber.frag.shader"
+        "--folder", "assets"
+      ]
     }
   ]
 }
