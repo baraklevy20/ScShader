@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { decompileShader } = require('./spirv');
 
 const unpack = async (fileToUnpack) => {
   const buffer = fs.readFileSync(fileToUnpack);
@@ -27,7 +28,8 @@ const unpack = async (fileToUnpack) => {
     currentIndex += 20;
 
     const shader = buffer.subarray(offset, offset + length);
-    fs.writeFileSync(`out/${fileToUnpack}/${shaderOffset}.spv`, shader);
+    fs.writeFileSync(`temp/${fileToUnpack}/${shaderOffset}.spv`, shader);
+    decompileShader(`${fileToUnpack}/${shaderOffset}.spv`);
   }
 };
 module.exports = {

@@ -24,9 +24,14 @@ const main = async () => {
     fs.rmSync('out', { recursive: true });
   }
 
+  if (fs.existsSync('temp')) {
+    fs.rmSync('temp', { recursive: true });
+  }
+
   filesToExtract.forEach((scFile) => {
     const lastSlash = scFile.lastIndexOf('/');
     fs.mkdirSync(`out/${scFile.substring(0, lastSlash)}/${scFile.substring(lastSlash + 1)}`, { recursive: true });
+    fs.mkdirSync(`temp/${scFile.substring(0, lastSlash)}/${scFile.substring(lastSlash + 1)}`, { recursive: true });
     promises.push(unpack(scFile));
   });
 
