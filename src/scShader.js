@@ -1,6 +1,12 @@
 const fs = require('fs');
 const { decompileShader } = require('./spirv');
 
+const readNullTerminatedString = (buffer, offset) => buffer.toString(
+  'utf-8',
+  offset,
+  buffer.indexOf(0, offset),
+);
+
 const unpack = async (fileToUnpack) => {
   const buffer = fs.readFileSync(fileToUnpack);
   const version = buffer.readUInt16LE(0);
@@ -13,10 +19,14 @@ const unpack = async (fileToUnpack) => {
   const numberOfVariants = buffer.readUInt16LE(8);
   const numberOfShaders = buffer.readUInt32LE(0xa);
   const variantsListSize = buffer.readUInt32LE(0xe);
+  const variants = [];
 
-  // for (let i = 0; i < numberOfVariants; i += 1) {
-
-  // }
+  let currentOffset = 0x14;
+  for (let i = 0; i < numberOfVariants; i += 1) {
+    const variant = readNullTerminatedString(buffer, currentOffset);
+    currentOffset += variant.length + 1;
+    variants.push(variant);
+  }
 
   let currentIndex = headerSize - 1;
   for (let i = 0; i < numberOfShaders; i += 1) {
